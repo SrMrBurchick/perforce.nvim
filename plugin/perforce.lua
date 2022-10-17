@@ -9,7 +9,7 @@ end, {
   range = true,
   nargs = '+',
   complete = function(arg)
-    local list = commands.command_list()
+    local list = require('perforce.commands').commands_list()
     return vim.tbl_filter(function(s)
       return string.match(s, '^' .. arg)
     end, list)

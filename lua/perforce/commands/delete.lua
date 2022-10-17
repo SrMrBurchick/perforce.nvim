@@ -1,10 +1,10 @@
 local M = {}
 local validator = require('perforce.commands.validation')
+local executer = require('perforce.commands.executer')
 
 function M.delete_single(file)
-    local file_to_add = validator.check_file(file)
-
-    vim.api.nvim_command('p4 delete ' .. file_to_add)
+    local file_to_delete = validator.check_file(file)
+    executer.execute('p4 delete ' .. file_to_delete)
 end
 
 function M.delete_multiple(files)

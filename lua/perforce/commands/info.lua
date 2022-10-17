@@ -1,7 +1,8 @@
 local M = {}
+local executer = require('perforce.commands.executer')
 
 function M.info()
-    vim.fn.nvim_command('p4 info')
+    executer.execute('p4 info')
 end
 
 return M

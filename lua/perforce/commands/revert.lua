@@ -1,10 +1,10 @@
 local M = {}
 local validator = require('perforce.commands.validation')
+local executer = require('perforce.commands.executer')
 
 function M.revert_single(file)
-    local file_to_add = validator.check_file(file)
-
-    vim.api.nvim_command('p4 revert ' .. file_to_add)
+    local file_to_revert = validator.check_file(file)
+    executer.execute('p4 revert ' .. file_to_revert)
 end
 
 function M.revert_multiple(files)
