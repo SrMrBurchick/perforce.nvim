@@ -1,7 +1,9 @@
 local perforce_opts = require('perforce.opts')
+local perforce_telescope = require('perforce.telescope')
 local api = vim.api
 local M = {
-    opts = perforce_opts
+    opts = perforce_opts,
+    telescope = perforce_telescope
 }
 
 M.perforece_augroup = api.nvim_create_augroup('Perforce', { clear = true })
