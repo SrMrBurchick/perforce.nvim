@@ -10,4 +10,12 @@ function M.files()
     return files
 end
 
+function M.changed_files()
+    local files = executer.execute('p4 files ...') -- Returns string
+
+    files = parser.parse_files(files) -- convert to array
+
+    return files
+end
+
 return M

@@ -71,4 +71,39 @@ function M.parse_files(files_string)
     return files
 end
 
+local function parse_file_changes(changes_string)
+    local changes = {}
+    local pos = string.find(changes_string, '\n')
+
+    while nil ~= pos do
+        local change_data = {}
+        local change = string.sub(changes_string, 0, pos)
+        local change_description = string.match(change, '#.+')
+
+        if nil ~= change_description then
+            change_description = string.sub(change_description, 0, string.find(change_description, '\n') - 1)
+            change = string.match(change, '#.+%s')
+            if nil ~= change then
+                change = string.sub(change, string.find(change, '#'),
+                                    string.find(change, ' '))
+                change_data.number = change
+                change_data.description = change_description
+                table.insert(changes, change_data)
+            end
+        end
+
+        changes_string = string.sub(changes_string, pos + 1)
+
+        pos = string.find(changes_string, '\n')
+    end
+
+    return changes
+end
+
+function M.parse_file_log(changes_string)
+    local changes = parse_file_changes(changes_string)
+
+    return changes
+end
+
 return M
