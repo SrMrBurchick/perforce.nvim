@@ -6,6 +6,7 @@ local p4_revert = require('perforce.commands.revert')
 local p4_shelve = require('perforce.commands.shelve')
 local p4_submit = require('perforce.commands.submit')
 local p4_sync = require('perforce.commands.sync')
+local p4_diff = require('perforce.commands.diff')
 
 local M = {}
 
@@ -37,6 +38,9 @@ local commands = {
     end,
     Sync = function ()
         p4_sync.sync()
+    end,
+    Diff = function ()
+        p4_diff.diff_all()
     end
 }
 
