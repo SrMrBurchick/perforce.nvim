@@ -1,8 +1,11 @@
 local M = {}
 
+function M.show_result(command)
+    print(M.execute(command))
+end
+
 function M.execute(command)
-    local result = vim.api.nvim_command('!' .. command)
-    print(result)
+    return vim.fn.system(command)
 end
 
 return M

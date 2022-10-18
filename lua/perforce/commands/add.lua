@@ -4,7 +4,7 @@ local executer = require('perforce.commands.executer')
 
 function M.add_single(file)
     local file_to_add = validator.check_file(file)
-    executer.execute('p4 add ' .. file_to_add)
+    executer.show_result('p4 add ' .. file_to_add)
 end
 
 function M.add_multiple(files)
