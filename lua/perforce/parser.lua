@@ -37,12 +37,16 @@ local function parse_file_path(file_path)
     end
 
     local result = string.match(file_path, opts.p4stream)
+    local pwd = vim.fn.getcwd()
     result = string.gsub(file_path, result, "")
     result = string.gsub(string.match(result, '.+#'), '#', '')
     -- Remove / symbol
     result = string.sub(result, 2)
 
-    return Path:new(result):make_relative(opts.p4root)
+    local root_path = opts.p4root .. '/' .. result
+    local relative = Path:new(root_path):make_relative(pwd)
+
+    return relative
 end
 
 function M.parse_files(files_string)
