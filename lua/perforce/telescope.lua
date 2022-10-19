@@ -96,7 +96,8 @@ function M.file_log(opts)
 
             define_preview = function(self, entry, _)
                 self.change = string.sub(entry.value, 1, string.find(entry.value, ' ') - 1)
-                self.change = file .. self.change
+                local pwd = vim.fn.getcwd()
+                self.change = pwd .. '/' .. file .. self.change
                 local cmd = { 'p4', 'diff', self.change }
                 putils.job_maker(cmd, self.state.bufnr, {
                     value = entry.value,

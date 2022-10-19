@@ -31,6 +31,7 @@ function M.parse_info()
 
 end
 
+
 local function parse_file_path(file_path)
     if nil == opts.p4stream then
         return
@@ -38,15 +39,32 @@ local function parse_file_path(file_path)
 
     local result = string.match(file_path, opts.p4stream)
     local pwd = vim.fn.getcwd()
-    result = string.gsub(file_path, result, "")
-    result = string.gsub(string.match(result, '.+#'), '#', '')
-    -- Remove / symbol
-    result = string.sub(result, 2)
+    local path_spliter = '/'
+    local has = vim.fn.has
+    local is_win = has "win32"
 
-    local root_path = opts.p4root .. '/' .. result
-    local relative = Path:new(root_path):make_relative(pwd)
+    if 0 ~= is_win then
+        path_spliter = '\\'
+    end
+    local pos = string.find(pwd, path_spliter)
 
-    return relative
+    while nil ~= pos do
+        pwd = string.sub(pwd, pos + 1)
+        pos = string.find(pwd, path_spliter)
+    end
+
+
+    file_path = string.gsub(file_path, result, '')
+    pos = string.find(file_path, pwd)
+    if nil ~= pos then
+        file_path = string.sub(file_path, pos + string.len(pwd))
+    end
+
+    file_path = string.sub(file_path, 2)
+
+    result = string.gsub(string.match(file_path, '.+#'), '#', '')
+
+    return result
 end
 
 function M.parse_files(files_string)
@@ -89,7 +107,7 @@ local function parse_file_changes(changes_string)
             change = string.match(change, '#.+%s')
             if nil ~= change then
                 change = string.sub(change, string.find(change, '#'),
-                                    string.find(change, ' '))
+                    string.find(change, ' '))
                 change_data.number = change
                 change_data.description = change_description
                 table.insert(changes, change_data)
