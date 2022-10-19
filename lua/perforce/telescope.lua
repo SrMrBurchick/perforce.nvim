@@ -46,7 +46,21 @@ function M.opened(opts)
         finder = finders.new_table {
             results = files
         },
-        previewer = conf.file_previewer(opts),
+        previewer = previewers.new_buffer_previewer({
+            title = "Change Diff",
+
+            get_buffer_by_name = function(_, entry)
+                return entry.value
+            end,
+
+            define_preview = function(self, entry, _)
+                local cmd = { 'p4', 'diff', entry.value }
+                putils.job_maker(cmd, self.state.bufnr, {
+                    value = entry.value,
+                    bufname = self.state.bufname,
+                })
+            end,
+        }),
         sorter = conf.generic_sorter(opts),
     }):find()
 end
