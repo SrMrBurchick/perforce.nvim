@@ -48,6 +48,9 @@ local function parse_file_path(file_path)
     end
     local pos = string.find(pwd, path_spliter)
 
+    if nil == result then
+        result = string.match(file_path, string.lower(opts.p4stream))
+    end
     while nil ~= pos do
         pwd = string.sub(pwd, pos + 1)
         pos = string.find(pwd, path_spliter)

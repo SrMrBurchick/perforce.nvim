@@ -1,7 +1,11 @@
 local M = {}
+local status, notify = pcall(require, 'notify')
+if (status) then
+    vim.notify = notify
+end
 
 function M.show_result(command)
-    print(M.execute(command))
+    vim.notify(M.execute(command))
 end
 
 function M.execute(command)
