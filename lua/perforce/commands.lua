@@ -7,6 +7,7 @@ local p4_shelve = require('perforce.commands.shelve')
 local p4_submit = require('perforce.commands.submit')
 local p4_sync = require('perforce.commands.sync')
 local p4_diff = require('perforce.commands.diff')
+local p4_permissions = require('perforce.commands.file_permissions')
 
 local M = {}
 
@@ -41,6 +42,10 @@ local commands = {
     end,
     Diff = function ()
         p4_diff.diff_all()
+    end,
+    MakeWritable = function ()
+        local file = vim.fn.expand('%:p')
+        p4_permissions.make_writable(file)
     end
 }
 
