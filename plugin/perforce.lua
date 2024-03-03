@@ -1,5 +1,6 @@
 local api = vim.api
 local commands = require('perforce.commands')
+local telescope = require('telescope')
 
 vim.g.preforce_nvim_version = '0.0.1'
 
@@ -15,3 +16,5 @@ end, {
     end, list)
   end,
 })
+
+telescope.load_extension('perforce')

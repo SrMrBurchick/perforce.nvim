@@ -7,6 +7,7 @@ local make_entry = require('telescope.make_entry')
 local p4files = require('perforce.commands.files')
 local p4opened = require('perforce.commands.opened')
 local p4diff = require('perforce.commands.diff')
+local p4file_log = require('perforce.commands.file_log')
 local p4parser = require('perforce.parser')
 local pickers = require('telescope.pickers')
 local previewers = require('telescope.previewers')
@@ -67,7 +68,7 @@ end
 
 function M.file_log(opts)
     local file = vim.fn.expand('%:~:.')
-    local changes = p4diff.diff_parent(file)
+    local changes = p4file_log.get_changes_log(file)
     local descriptions = {}
     -- TODO: remove from here
     p4parser.parse_info()
@@ -95,10 +96,14 @@ function M.file_log(opts)
             end,
 
             define_preview = function(self, entry, _)
-                self.change = string.sub(entry.value, 1, string.find(entry.value, ' ') - 1)
+                local change = entry.value
+                if nil ~= string.find(entry.value, ' ') then
+                    change = string.sub(entry.value, 1, string.find(entry.value, ' ') - 1)
+                end
+
                 local pwd = vim.fn.getcwd()
-                self.change = pwd .. '/' .. file .. self.change
-                local cmd = { 'p4', 'diff', self.change }
+                change = pwd .. '/' .. file .. change
+                local cmd = { 'p4', 'diff', change }
                 putils.job_maker(cmd, self.state.bufnr, {
                     value = entry.value,
                     bufname = self.state.bufname,

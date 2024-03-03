@@ -28,7 +28,6 @@ end
 
 function M.execute(command)
     local result = vim.fn.system(command)
-    vim.cmd(':e')
     return result
 end
 

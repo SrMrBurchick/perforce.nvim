@@ -18,4 +18,13 @@ function M.check_file(file)
     return process_file
 end
 
+function M.is_change_valid(change)
+    local number = tonumber(string.match(change.number, '%d+'))
+    if nil == number then
+        return false
+    end
+
+    return number > 0 and (change.description ~= nil or change.description ~= '')
+end
+
 return M

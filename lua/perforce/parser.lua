@@ -1,6 +1,7 @@
 local Path = require('plenary.path')
 local opts = require('perforce.opts')
 local p4_info = require('perforce.commands.info')
+local validator = require('perforce.commands.validation')
 
 local M = {}
 
@@ -96,6 +97,15 @@ function M.parse_files(files_string)
     return files
 end
 
+local function is_table_contains(table, value)
+    for _, v in ipairs(table) do
+        if v.number == value.number then
+            return true
+        end
+    end
+    return false
+end
+
 local function parse_file_changes(changes_string)
     local changes = {}
     local pos = string.find(changes_string, '\n')
@@ -113,7 +123,9 @@ local function parse_file_changes(changes_string)
                     string.find(change, ' '))
                 change_data.number = change
                 change_data.description = change_description
-                table.insert(changes, change_data)
+                if false == is_table_contains(changes, change_data) and validator.is_change_valid(change_data) then
+                    table.insert(changes, change_data)
+                end
             end
         end
 
