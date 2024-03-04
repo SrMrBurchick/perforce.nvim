@@ -97,7 +97,7 @@ function M.parse_files(files_string)
     return files
 end
 
-local function is_table_contains(table, value)
+local function is_table_contains_change(table, value)
     for _, v in ipairs(table) do
         if v.number == value.number then
             return true
@@ -123,7 +123,7 @@ local function parse_file_changes(changes_string)
                     string.find(change, ' '))
                 change_data.number = change
                 change_data.description = change_description
-                if false == is_table_contains(changes, change_data) and validator.is_change_valid(change_data) then
+                if false == is_table_contains_change(changes, change_data) and validator.is_change_valid(change_data) then
                     table.insert(changes, change_data)
                 end
             end
@@ -141,6 +141,34 @@ function M.parse_file_log(changes_string)
     local changes = parse_file_changes(changes_string)
 
     return changes
+end
+
+function M.parse_change_lists(change_lists_string)
+    local change_lists = {}
+    local pos = string.find(change_lists_string, '\n')
+
+    while nil ~= pos do
+        local change_data = {}
+        local change = string.sub(change_lists_string, 0, pos)
+        change_data.description = string.match(change, '*pending*.+')
+        change_data.description = string.sub(change_data.description, 0, string.len(change_data.description) - 1)
+
+        change = string.match(change, 'Change %d+')
+        if nil ~= change then
+            change = string.match(change, '%d+')
+            change_data.number = change
+        end
+
+        if false == is_table_contains_change(change_lists, change_data) then
+            table.insert(change_lists, change_data)
+        end
+
+        change_lists_string = string.sub(change_lists_string, pos + 1)
+
+        pos = string.find(change_lists_string, '\n')
+    end
+
+    return change_lists
 end
 
 return M

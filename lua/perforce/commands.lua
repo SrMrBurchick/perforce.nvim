@@ -7,6 +7,7 @@ local p4_shelve = require('perforce.commands.shelve')
 local p4_submit = require('perforce.commands.submit')
 local p4_sync = require('perforce.commands.sync')
 local p4_diff = require('perforce.commands.diff')
+local p4_changelists = require('perforce.commands.changelists')
 -- local p4_permissions = require('perforce.commands.file_permissions')
 
 local M = {}
@@ -49,6 +50,9 @@ local commands = {
     end,
     Blame = function ()
         -- TODO
+    end,
+    PendingChanges = function ()
+        p4_changelists.get_pending_change_lists()
     end
 }
 

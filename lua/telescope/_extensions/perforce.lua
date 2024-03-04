@@ -5,6 +5,7 @@ return telescope.register_extension {
     exports = {
         files = p4_telescope.files,
         opened = p4_telescope.opened,
-        file_log = p4_telescope.file_log
+        file_log = p4_telescope.file_log,
+        pending_changes = p4_telescope.pengidng_change_lists
     }
 }

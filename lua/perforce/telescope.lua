@@ -13,6 +13,7 @@ local pickers = require('telescope.pickers')
 local previewers = require('telescope.previewers')
 local putils = require('telescope.previewers.utils')
 local popts = require('perforce.opts')
+local p4changelists = require('perforce.commands.changelists')
 
 local M = {}
 
@@ -109,6 +110,55 @@ function M.file_log(opts)
                     bufname = self.state.bufname,
                     cwd = popts.p4root,
                 })
+            end,
+        }),
+        sorter = conf.generic_sorter(opts),
+    }):find()
+end
+
+function M.pengidng_change_lists(opts)
+    local changes = p4changelists.get_pending_change_lists()
+    local descriptions = {}
+    p4parser.parse_info()
+    opts = opts or {}
+
+    if nil == changes then
+        return
+    end
+
+    for _, change in ipairs(changes) do
+        table.insert(descriptions, 'Change ' .. change.number .. ' ' .. change.description)
+    end
+
+    pickers.new(opts, {
+        prompt_title = "Perforce pending changelists",
+        finder = finders.new_table {
+            results = descriptions
+        },
+        previewer = previewers.new_buffer_previewer({
+            title = "Changelist full info",
+
+            get_buffer_by_name = function(_, entry)
+                return entry.value
+            end,
+
+            define_preview = function(self, entry, _)
+                local change_data = {}
+                local change = entry.value
+                change = string.match(change, 'Change %d+')
+                if nil ~= change then
+                    change = string.match(change, '%d+')
+                    change_data.number = change
+                end
+
+                if nil ~= change_data.number then
+                    local cmd = { 'p4', 'change', '-o', change_data.number }
+                    putils.job_maker(cmd, self.state.bufnr, {
+                        value = entry.value,
+                        bufname = self.state.bufname,
+                        cwd = popts.p4root,
+                    })
+                end
             end,
         }),
         sorter = conf.generic_sorter(opts),
