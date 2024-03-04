@@ -13,4 +13,13 @@ function M.checkout_multiple(files)
     end
 end
 
+function M.checkout_on_changelists(file, changelist)
+    local file_to_checkout = validator.check_file(file)
+    if file_to_checkout ~= '' then
+        executer.show_result('p4 edit' .. ' -c ' .. changelist .. ' ' .. file_to_checkout)
+    else
+        vim.notify("Error! Invalid file: " .. file, vim.log.levels.ERROR)
+    end
+end
+
 return M

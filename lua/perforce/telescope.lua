@@ -14,8 +14,13 @@ local previewers = require('telescope.previewers')
 local putils = require('telescope.previewers.utils')
 local popts = require('perforce.opts')
 local p4changelists = require('perforce.commands.changelists')
+local action_set = require("telescope.actions.set")
+
 
 local M = {}
+
+function M.on_change_list_picked(changelist)
+end
 
 function M.files(opts)
     local files = p4files.files()
@@ -162,7 +167,27 @@ function M.pengidng_change_lists(opts)
             end,
         }),
         sorter = conf.generic_sorter(opts),
+        attach_mappings = function(prompt_bufnr, map)
+            map('i', '<CR>', function()
+                -- local selection = action_state.get_selected_entry()
+                local picker = action_state.get_current_picker(prompt_bufnr)
+
+                -- temporarily register a callback which keeps selection on refresh
+                local selection = picker:get_selection_row()
+                local entry = picker.manager:get_entry(picker:get_index(selection))
+                if nil ~= entry then
+                    M.selected_changelist = string.match(entry.value, "Change %d+")
+                    M.selected_changelist = string.match(M.selected_changelist, "%d+")
+                    M.on_change_list_picked(M.selected_changelist)
+                end
+
+                actions.close(prompt_bufnr)
+            end)
+            return true
+        end,
     }):find()
+
+    return M.selected_changelist
 end
 
 return M

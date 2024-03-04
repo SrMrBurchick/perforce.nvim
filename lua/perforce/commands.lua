@@ -9,6 +9,7 @@ local p4_sync = require('perforce.commands.sync')
 local p4_diff = require('perforce.commands.diff')
 local p4_changelists = require('perforce.commands.changelists')
 -- local p4_permissions = require('perforce.commands.file_permissions')
+local p4_telescope = require('perforce.telescope')
 
 local M = {}
 
@@ -51,9 +52,17 @@ local commands = {
     Blame = function ()
         -- TODO
     end,
-    PendingChanges = function ()
-        p4_changelists.get_pending_change_lists()
-    end
+    CheckoutOnChangelist = function ()
+        local p4telescope_perforece = require('telescope').extensions.perforce
+        local file = vim.fn.expand('%:p')
+        function p4_telescope.on_change_list_picked(changelist)
+            if nil ~= changelist then
+                p4_edit.checkout_on_changelists(file, changelist)
+            end
+        end
+
+        p4telescope_perforece.pending_changes()
+    end,
 }
 
 function M.commands_list()
