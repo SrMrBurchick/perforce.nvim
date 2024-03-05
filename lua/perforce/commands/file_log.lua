@@ -5,7 +5,7 @@ local parser = require('perforce.parser')
 
 function M.get_changes_log(file)
     local changes = {}
-    local changes_string = executer.execute('p4 filelog ' .. file)
+    local changes_string = executer.execute('p4 filelog "' .. file .. '"')
 
     changes = parser.parse_file_log(changes_string)
     --

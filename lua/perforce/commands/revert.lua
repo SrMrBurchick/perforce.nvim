@@ -4,7 +4,7 @@ local executer = require('perforce.commands.executer')
 
 function M.revert_single(file)
     local file_to_revert = validator.check_file(file)
-    executer.show_result('p4 revert ' .. file_to_revert)
+    executer.show_result('p4 revert "' .. file_to_revert .. '"')
 end
 
 function M.revert_multiple(files)
