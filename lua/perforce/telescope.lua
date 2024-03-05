@@ -95,17 +95,14 @@ function M.file_log(opts)
             results = descriptions
         },
         previewer = previewers.new_buffer_previewer({
-            title = "Change Diff",
+            title = "Revision Diff",
 
             get_buffer_by_name = function(_, entry)
                 return entry.value
             end,
 
             define_preview = function(self, entry, _)
-                local change = entry.value
-                if nil ~= string.find(entry.value, ' ') then
-                    change = string.sub(entry.value, 1, string.find(entry.value, ' ') - 1)
-                end
+                local change = string.match(entry.value, '#%d+')
 
                 local pwd = vim.fn.getcwd()
                 change = pwd .. '/' .. file .. change

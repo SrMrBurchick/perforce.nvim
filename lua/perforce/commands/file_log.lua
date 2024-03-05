@@ -8,12 +8,12 @@ function M.get_changes_log(file)
     local changes_string = executer.execute('p4 filelog ' .. file)
 
     changes = parser.parse_file_log(changes_string)
-
-    for _ , change in ipairs(changes) do
-        if p4diff ~= nil then
-            change.diff = p4diff.file_diff(file, change.number)
-        end
-    end
+    --
+    -- for _ , change in ipairs(changes) do
+    --     if p4diff ~= nil then
+    --         change.diff = p4diff.file_diff(file, change.number)
+    --     end
+    -- end
     return changes
 end
 

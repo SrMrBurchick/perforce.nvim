@@ -114,15 +114,17 @@ local function parse_file_changes(changes_string)
         local change_data = {}
         local change = string.sub(changes_string, 0, pos)
         local change_description = string.match(change, '#.+')
+        local change_id = string.match(change, '#%d+')
 
         if nil ~= change_description then
             change_description = string.sub(change_description, 0, string.find(change_description, '\n') - 1)
-            change = string.match(change, '#.+%s')
+            change_description = string.match(change_description, '%(text%)%s*(.+)')
+
+            change = string.match(change, 'change %d+')
             if nil ~= change then
-                change = string.sub(change, string.find(change, '#'),
-                    string.find(change, ' '))
+                change = string.match(change, '%d+')
                 change_data.number = change
-                change_data.description = change_description
+                change_data.description = change_id .. ' Change ' .. change .. ' ' .. change_description
                 if false == is_table_contains_change(changes, change_data) and validator.is_change_valid(change_data) then
                     table.insert(changes, change_data)
                 end
